@@ -1,0 +1,135 @@
+﻿@{
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity
+@model SMS.Models.MenuData
+<div class="user">
+    <div class="photo">
+        <img src="../HinhAnh/@Model.HinhAnh" />
+    </div>
+    @Model.HoTen
+    <div class="info">
+        <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+            <span style="font-size:12px">               
+                @User.Identity.Name
+                <b class="caret"></b>
+            </span>
+        </a>
+        <div class="clearfix"></div>
+        <div class="collapse" id="collapseExample">
+            <ul class="nav">
+                <li>
+                    <a href="/myprofilegv/show">
+                        <span class="sidebar-mini"> TT </span>
+                        <span class="sidebar-normal"> Thông tin giáo viên </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/manage/changepassword">
+                        <span class="sidebar-mini"> MK </span>
+                        <span class="sidebar-normal"> Đổi mật khẩu </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()">
+                        <span class="sidebar-mini"> TH </span>
+                        <span class="sidebar-normal"> Thoát </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> GIẢNG DẠY TẠI TRƯỜNG </p>
+        </a>
+    </li>
+    <li>
+        <a href="/thoikhoabieugv/show">
+            <i class="material-icons">widgets</i>
+            <p> Lịch công tác </p>
+        </a>
+    </li>
+    <li>
+        <a href="/hocsinh/show">
+            <i class="material-icons">widgets</i>
+            <p> Học sinh </p>
+        </a>
+    </li>
+    <li>
+        <a href="/ketquahoctaphs/show">
+            <i class="material-icons">widgets</i>
+            <p> Kết quả học tập </p>
+        </a>
+    </li>
+    @*<li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> Học bạ </p>
+        </a>
+    </li>*@
+    <li>
+        <a href="/baocaogv/show">
+            <i class="material-icons">widgets</i>
+            <p> Báo cáo</p>
+        </a>
+    </li>
+
+</ul>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> HỌC TẬP TRỰC TUYẾN </p>
+        </a>
+    </li>
+    <li>
+        <a href="/chude/show">
+            <i class="material-icons">widgets</i>
+            <p> Khóa học </p>
+        </a>
+    </li>
+    <li>
+        <a data-toggle="collapse" href="#adhoctapbaocao">
+            <i class="material-icons">apps</i>
+            <p>
+                Báo cáo, thống kê
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="adhoctapbaocao">
+            <ul class="nav">
+                <li>
+                    <a href="/tiendohoctaptt/show">
+                        <span class="sidebar-mini"> TD </span>
+                        <span class="sidebar-normal"> Tiến độ học tập </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/thongkekhoahocttgv/show">
+                        <span class="sidebar-mini"> KH </span>
+                        <span class="sidebar-normal"> Thống kê khóa học </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    @*<li>
+            <a href="/ketquahoctapttgv/show">
+                <i class="material-icons">widgets</i>
+                <p> Kết quả học tập </p>
+            </a>
+        </li>
+        <li>
+            <a href="/bcgvtructuyen/show">
+                <i class="material-icons">widgets</i>
+                <p> Báo cáo </p>
+            </a>
+        </li>*@
+</ul>

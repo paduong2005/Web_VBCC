@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity
+@model String
+<div class="user">
+    <div class="photo">
+        <img src="../HinhAnh/@Model" />
+    </div>
+    <div class="info">
+        <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+            <span style="font-size:12px">
+                @User.Identity.Name
+                <b class="caret"></b>
+            </span>
+        </a>
+        <div class="clearfix"></div>
+        <div class="collapse" id="collapseExample">
+            <ul class="nav">
+                <li>
+                    <a href="/manage/changepassword">
+                        <span class="sidebar-mini"> MK </span>
+                        <span class="sidebar-normal"> Đổi mật khẩu </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()">
+                        <span class="sidebar-mini"> TH </span>
+                        <span class="sidebar-normal"> Thoát </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> THÔNG TIN TỐT NGHIỆP </p>
+        </a>
+    </li>
+
+    <li>
+        <a href="/lophoc/show">
+            <i class="material-icons">widgets</i>
+            <p> Lớp học </p>
+        </a>
+    </li>
+
+    <li>
+        <a data-toggle="collapse" href="#adhosogiaovien">
+            <i class="material-icons">image</i>
+            <p>
+                Danh sách học sinh
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="adhosogiaovien">
+            <ul class="nav">
+                <li>
+                    <a href="/xettotnghiep/show">
+                        <span class="sidebar-mini"> TG </span>
+                        <span class="sidebar-normal"> Tham gia xét tốt nghiệp </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/denghixettotnghiep/show">
+                        <span class="sidebar-mini"> DN </span>
+                        <span class="sidebar-normal"> Đề nghị xét tốt nghiệp </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/xacnhantotnghiep/show">
+                        <span class="sidebar-mini"> XN </span>
+                        <span class="sidebar-normal"> Xác nhận tốt nghiệp </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+
+    <li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> Tìm kiếm thông tin </p>
+        </a>
+    </li>
+
+    <li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> Báo cáo thống kê </p>
+        </a>
+    </li>
+
+</ul>

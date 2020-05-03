@@ -1,0 +1,284 @@
+﻿@{
+    ViewBag.Title = "Thông tin lớp học";
+}
+
+    <div class="row" ng-app="myApp" ng-controller="myCtrl">
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="card-header card-header-icon" data-background-color="green">
+                    <i class="material-icons">&#xE894;</i>
+                </div>
+                <div class="card-content">
+                    <h4 class="card-title">Danh sách lớp học</h4>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label"></label>
+                                <input class="form-control" ng-model="searchtext" placeholder="Tìm kiếm thông tin" type="text" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="#" class="btn btn-warning btn-round" ng-click="Tim()">
+                                <i class="material-icons">search</i>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 td-actions text-right">
+                            <a href="#" class="btn btn-success btn-round" ng-click="addNew()">
+                                <i class="material-icons">add</i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr class="headings danger">
+                                    <th> STT</th>
+                                    <th>Lớp học</th>                                   
+                                    <th class="text-right">Thao tác</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr ng-repeat="item in allDanhMuc">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{item.Lop}}</td>
+                                    <td class="td-actions text-right">
+                                        <a href="#" class="btn btn-success btn-round" ng-click="edit($index)" data-toggle="tooltip" title="Chỉnh sửa">
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                        <a href="#" class="btn btn-danger btn-round" ng-click="sendDelete($index)" data-toggle="tooltip" title="Xóa">
+                                            <i class="material-icons">close</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <ul items-per-page="itemPerPage" uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" boundary-link-numbers="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- tao model them moi-->
+        <div id="insertmodal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg" style="width:50%">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{modaltitle}}</h4>
+                    </div>
+                    <!-- begin form-->
+                    <form class="css-form" name="createForm" ng-submit="finishForm(createForm.$valid)">
+                        <!-- body-->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        @*<span class=" label label-danger">Tên lớp</span>*@
+                                        <input type="text" class="form-control text-uppercase" ng-model="Info.Lop" ng-disabled="DisTenLop" placeholder="Tên lớp ví dụ: 9A1"/>
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Hoàn thành</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- end modal content-->
+            </div>
+        </div>
+        <!-- end modal them-->
+    </div>
+
+
+<!-- end content-->
+@section scripts {
+
+    <script>
+
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap', 'ui.mask','myDirective']);
+        app.controller('myCtrl', function ($scope, $http) {
+           
+            // phan trang
+            $scope.numPages;
+            $scope.itemPerPage;
+            $scope.totalItems;
+            $scope.currentPage = 1;
+            $scope.maxSize = 5;
+            $scope.pageChanged = function () {
+                $scope.GetData($scope.currentPage);
+            };
+            // lay du lieu
+            $scope.allDanhMuc = [];
+            $scope.searchtext = "";
+            $scope.GetData = function (page) {
+                showLoader(true);
+                $http({
+                    method: "GET",
+                    url: "/lophoc/getdm?search=" + $scope.searchtext + "&page=" + $scope.currentPage
+                }).then(function mySuccess(response) {
+                    showLoader(false);
+
+                    if (response.data.error === 0) {
+
+                        $scope.allDanhMuc = response.data.data;
+                        $scope.itemPerPage = response.data.pageSize;
+                        $scope.totalItems = response.data.toltalSize;
+                        $scope.numPages = Math.round($scope.totalItems / $scope.itemPerPage);
+                    }
+
+                }, function myError(response) {
+                    showLoader(false);
+                    showNotify('Lỗi kết nối');
+                });
+            }
+            // goi lay du liẹu
+
+            $scope.GetData(1);
+            //
+            $scope.Tim = function () {
+                $scope.GetData();
+            }
+            // khoi tao bien dung cho create va edit
+            $scope.Info = {};
+            $scope.IsAction = '';
+
+            $scope.addNew = function () {
+
+                $scope.Info = { "Lop": ""};
+                $scope.modaltitle = "Thêm mới thông tin";
+                //$scope.DisTenLop = false;
+                $scope.IsAction = 'add';
+                showModel("insertmodal");
+
+            };
+            //ket thuc show gia han
+            $scope.edit = function (index) {
+                var info = $scope.allDanhMuc[index];
+                $scope.Info = angular.copy(info);
+                $scope.modaltitle = "Chỉnh sửa thông tin";
+               // $scope.DisTenLop = true;
+                $scope.IsAction = 'edit';
+                showModel("insertmodal");
+            };
+            // action
+            $scope.finishForm = function (isValid) {
+                if ($scope.IsAction === 'add') {
+                    $scope.sendCreate();
+                } else if ($scope.IsAction === 'edit') {
+                    $scope.sendEdit();
+                } else if ($scope.IsAction === 'delete') {
+                    $scope.Info = angular.copy(info);
+                    $scope.sendDelete();
+                }
+            };
+            // them tinh
+            $scope.sendCreate = function () {
+                showLoader(true);
+                $http({
+                    method: "POST",
+                    url: "/lophoc/create",
+                    data: { dm: $scope.Info}
+                }).then(function success(response) {
+
+                    var result = response.data;
+
+                    if (result.error === 0) {
+                        $scope.GetData();
+                        $scope.allDanhMuc.unshift(result.data);
+                        hideModel("insertmodal");
+
+                        showNotify("Đã thêm thông tin");
+
+                    } else {
+
+                        alert(result.msg);
+
+                    }
+                    showLoader(false);
+
+                }
+                    , function error(response) {
+                        showNotify("Lỗi kết nối");
+                        showLoader(false);
+                    });
+
+            };
+            // cap nhat tinh
+            $scope.sendEdit = function () {
+                showLoader(true);
+                //console.log($scope.Info.NamHienTai);
+                $http({
+                    method: "POST",
+                    url: "/lophoc/edit",
+                    data: { dm: $scope.Info}
+                }).then(
+                    function success(response) {
+                        $scope.GetData();
+                        var result = response.data;
+
+                        if (result.error === 0) {
+                            showNotify("Đã cập nhật");
+                            hideModel("insertmodal");
+
+                        } else {
+
+                            alert(result.msg);
+
+                        }
+                        showLoader(false);
+
+                    },
+                    function errror(response) {
+                        showLoader(false);
+                        showNotify("Lỗi kết nối");
+                    }
+                    );
+            };
+            // xoa du lieu
+            $scope.sendDelete = function (index) {
+                var info = $scope.allDanhMuc[index];
+                var r = confirm("Bạn muốn xóa không ?");
+                if (r) {
+                    showLoader(true);
+
+                    $http({
+                        method: "POST",
+                        url: "/lophoc/delete",
+                        data: { ma: info.ID }
+                    }).then(
+                        function success(response) {
+
+                            var result = response.data;
+
+                            if (result.error == 0) {
+
+                                $scope.allDanhMuc.splice(index, 1);
+
+                            } else {
+
+                                alert(result.msg);
+
+                            }
+
+                            showLoader(false);
+
+                        },
+                        function errror(response) {
+                            showLoader(false);
+                            showNotify("Lỗi kết nối");
+                        }
+                        );
+                } 
+            }           
+        });
+        //-- end controller
+
+    </script>
+}
+
+
+

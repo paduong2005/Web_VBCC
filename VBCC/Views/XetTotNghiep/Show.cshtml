@@ -1,0 +1,891 @@
+﻿@{
+    ViewBag.Title = "Thông tin học sinh";
+}
+<style>
+
+    .pane-hScroll {
+        overflow: auto;
+        /*width: 400px;*/
+        /*background: green;*/
+    }
+
+    .pane-vScroll {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 450px;
+        /*background: red;*/
+    }
+</style>
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-header card-header-icon" data-background-color="green">
+                <i class="material-icons">&#xE894;</i>
+            </div>
+            <div class="card-content">
+                <h4 class="card-title">Danh sách học sinh</h4>
+
+                <div class="card-content">
+                    <div class="tab-content">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label"></label>
+                                        <input class="form-control" ng-model="searchtext" placeholder="Nhập vào họ tên" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <a href="#" class="btn btn-warning btn-round" ng-click="Tim()" data-toggle="tooltip" title="Tìm kiếm">
+                                        <i class="material-icons">search</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="#" class="btn btn-success btn-round" ng-click="addNew()" data-toggle="tooltip" title="Thêm mới">
+                                        <i class="material-icons">add</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="#" class="btn btn-info btn-round" ng-click="getexcel()" data-toggle="tooltip" title="Tải file exccel">
+                                        <i class="material-icons">cloud_download</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="#" class="btn btn-danger btn-round" ng-click="importexcel()" data-toggle="tooltip" title="Cập nhật file">
+                                        <i class="material-icons">cloud_upload</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="/hocsinh/excelexport" class="btn btn-warning btn-round" data-toggle="tooltip" title="Xuất excel">
+                                        <i class="material-icons">exit_to_app</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="#" class="btn btn-primary btn-round" ng-click="ketchuyen()" data-toggle="tooltip" title="Chuyển phòng">
+                                        <i class="material-icons">trending_up</i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-1 td-actions text-right">
+                                    <a href="#" class="btn btn-danger btn-round" ng-click="xoadshs()" data-toggle="tooltip" title="Xóa danh sách đã chọn">
+                                        <i class="material-icons">delete</i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <span class="text-danger">{{msg}}</span>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                        <tr class="headings info">
+                                            <th>STT</th>
+                                            <th>Họ và</th>
+                                            <th>Tên</th>
+                                            <th>Lớp</th>
+                                            <th>Năm học</th>
+                                            <th>Năm sinh</th>
+                                            <th>Giới tính</th>
+                                            <th>Nơi sinh</th>
+                                            <th>TBCN</th>
+                                            <th>Xếp loại HK</th>
+                                            <th>Xếp loại HL</th>
+                                            <th>Xếp loại TN</th>
+                                            <th>Trang thái</th>
+                                            <th class="text-right">Thao tác</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="item in allDanhMuc">
+                                            <td><input type="checkbox" ng-model="item.isCheck" ng-checked="item.isCheck" /> {{$index + 1}}</td>
+                                            <td>{{item.HoChuLot}}</td>
+                                            <td>{{item.Ten}}</td>
+                                            <td>{{item.Lop}}</td>
+                                            <td>{{item.NamHoc}}</td>
+                                            <td>{{item.Ngay}}/{{item.Thang}}/{{item.Nam}}</td>
+                                            <td>{{item.GioiTinh}}</td>
+                                            <td>{{item.NoiSinh}}</td>
+                                            <td>{{item.TBCN}}</td>
+                                            <td>{{item.XepLoaiHK}}</td>
+                                            <td>{{item.XepLoaiHL}}</td>
+                                            <td>{{item.XepLoaiTN}}</td>
+                                            <td>{{item.TrangThai === 0 ? 'Tạo mới' :(item.TrangThai=== 1 ? 'Đã chuyển': (item.TrangThai === 2 ? 'Đã duyệt': 'Không duyệt'))}}</td>
+                                            <td class="td-actions text-right" style="width:10%">
+                                                <a href="#" class="btn btn-success btn-round" ng-click="edit($index)" data-toggle="tooltip" title="chỉnh sửa">
+                                                    <i class="material-icons">edit</i>
+                                                </a>
+                                                <a href="#" class="btn btn-danger btn-round" ng-click="sendDelete($index)" data-toggle="tooltip" title="Xóa">
+                                                    <i class="material-icons">close</i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>                                
+                                <ul items-per-page="itemPerPage" uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" boundary-link-numbers="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- tao model them moi-->
+    <div id="insertmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width:70%">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{modaltitle}}</h4>
+                </div>
+
+                <!-- begin form-->
+                <form class="css-form" name="createForm" ng-submit="finishForm(createForm.$valid)">
+                    <!-- body-->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class="label label-danger">Năm học</span>
+                                        <select class="form-control" ng-model="Info.NamHoc" required convert-to-number>
+                                            <option ng-repeat="x in NamHoc" value="{{x.NamHoc}}">{{x.NamHoc}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class="label label-danger">Lớp</span>
+                                        <select class="form-control" ng-model="Info.Lop" required>
+                                            <option ng-repeat="x in LopHoc" value="{{x.Lop}}">{{x.Lop}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class="label label-danger">Họ và chữ lót</span>
+                                        <input type="text" class="form-control" ng-model="Info.HoChuLot" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class="label label-danger">Tên</span>
+                                        <input type="text" class="form-control" ng-model="Info.Ten" required />
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="label label-danger">Ngày</span>
+                                            <select class="form-control" ng-model="Info.Ngay" required convert-to-number>
+                                                <option ng-repeat="x in Ngay" value="{{x.Ngay}}">{{x.Ngay}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="label label-danger">Tháng</span>
+                                            <select class="form-control" ng-model="Info.Thang" required convert-to-number>
+                                                <option ng-repeat="x in Thang" value="{{x.Thang}}">{{x.Thang}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="label label-danger">Năm</span>
+                                            <select class="form-control" ng-model="Info.Nam" required convert-to-number>
+                                                <option ng-repeat="x in Nam" value="{{x.Nam}}">{{x.Nam}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class="label label-danger">Giới tính</span>
+                                        <select class="form-control" ng-model="Info.GioiTinh" required>
+                                            <option value="Nam">Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Buổi nghỉ</span>
+                                        <input type="number" class="form-control" ng-model="Info.BuoiNghi" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Dân tộc</span>
+                                        <input type="text" class="form-control" ng-model="Info.DanToc" placeholder="Dân tộc" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-10">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Nơi sinh</span>
+                                        <input type="text" class="form-control" ng-model="Info.NoiSinh" placeholder="Nơi sinh" />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Toán</span>
+                                        <input type="text" class="form-control" ng-model="Info.Toan" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Lý</span>
+                                        <input type="text" class="form-control" ng-model="Info.Ly" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Hóa</span>
+                                        <input type="text" class="form-control" ng-model="Info.Hoa" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Sinh</span>
+                                        <input type="text" class="form-control" ng-model="Info.Sinh" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Ngữ văn</span>
+                                        <input type="text" class="form-control" ng-model="Info.NguVan" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Sử</span>
+                                        <input type="text" class="form-control" ng-model="Info.Su" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Địa</span>
+                                        <input type="text" class="form-control" ng-model="Info.Dia" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Tiếng anh</span>
+                                        <input type="text" class="form-control" ng-model="Info.TiengAnh" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">GDCD</span>
+                                        <input type="text" class="form-control" ng-model="Info.GDCD" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Công nghệ</span>
+                                        <input type="text" class="form-control" ng-model="Info.CongNghe" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Tiếng Pháp</span>
+                                        <input type="text" class="form-control" ng-model="Info.TiengPhap" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Thể dục</span>
+                                        <select class="form-control" ng-model="Info.TheDuc" required>
+                                            <option value="Đ">Đạt</option>
+                                            <option value="CĐ">Chưa đạt</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Nhạc</span>
+                                        <select class="form-control" ng-model="Info.Nhac" required>
+                                            <option value="Đ">Đạt</option>
+                                            <option value="CĐ">Chưa đạt</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <span class=" label label-info">Mỹ thuật</span>
+                                        <select class="form-control" ng-model="Info.MyThuat" required>
+                                            <option value="Đ">Đạt</option>
+                                            <option value="CĐ">Chưa đạt</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <span class=" label label-danger">TBCN</span>
+                                        <input type="text" class="form-control" ng-model="Info.TBCN" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <span class=" label label-danger">Xếp loại HK</span>                                       
+                                        <select class="form-control" ng-model="Info.XepLoaiHK" required>
+                                            <option value="Tốt">Tốt</option>
+                                            <option value="Khá">Khá</option>
+                                            <option value="Trung bình">Trung bình</option>
+                                            <option value="Yếu">Yếu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <span class=" label label-danger">Xếp loại HL</span>
+                                        <select class="form-control" ng-model="Info.XepLoaiHL" required>
+                                            <option value="Giỏi">Giỏi</option>
+                                            <option value="Khá">Khá</option>
+                                            <option value="Trung bình">Trung bình</option>
+                                            <option value="Yếu">Yếu</option>
+                                            <option value="Kém">Kém</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <span class=" label label-danger">Xếp loại TN</span>
+                                        <select class="form-control" ng-model="Info.XepLoaiTN" required>
+                                            <option value="Giỏi">Giỏi</option>
+                                            <option value="Khá">Khá</option>
+                                            <option value="Trung bình">Trung bình</option>                                           
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end body-->
+                    <!-- begin footer-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Hoàn thành</button>
+                    </div>
+                    <!-- end footer-->
+                </form>
+                <!-- end form-->
+
+            </div>
+            <!-- end modal content-->
+        </div>
+    </div>
+    <!-- tao model them moi-->
+    <div id="nhapexcelmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Nhập từ excel</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail">
+                                    <img src="/HinhAnh/excel.jpg" alt="...">
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                <div>
+                                    <span class="btn-xs btn-info btn-round btn-file">
+                                        <span class="fileinput-new">Chọn file</span>
+                                        <span class="fileinput-exists">Thay đổi</span>
+                                        <input type="file" id="filetailieu" ng-model="Info.TenFile" file-model="myFile" />
+                                    </span>
+                                    <span>Chỉ hỗ trợ excel 2007 trở lên (*.xlsx) </span>
+                                    <a href="#pablo" class="btn-xs btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Xóa</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-danger" ng-click="uploadFile()">Cập nhật</button>
+                        </div>
+                        <div class="col-sm-12">
+                            <span class="text-danger">Tên file excel : Không dấu và viết liền nhau</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <label class="label label-danger">Thông tin các dòng bị lỗi</label>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                        <tr class="headings danger">
+                                            <th>STT</th>
+                                            <th>Dòng</th>
+                                            <th>Cột</th>
+                                            <th>Nội dung</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="item in ListError">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{item.Dong}}</td>
+                                            <td>{{item.Cot}}</td>
+                                            <td>{{item.NoiDung}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- end modal content-->
+        </div>
+    </div>
+    <div id="ketchuyenmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width:50%">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">In phích ấn phẩm</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="label label-danger">Khối lớp</span>
+                                <select required class="form-control" ng-model="Info.KhoiLop" convert-to-number ng-change="changekhoilop()">
+                                    <option ng-repeat="x in AllKhoiLop" value="{{x.ID}}">{{x.TenKhoi}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="label label-danger">Lớp</span>
+                                <select class="form-control" ng-model="Info.Lop" required convert-to-number ng-change="gethocsinh()">
+                                    <option ng-repeat="x in AllLopHoc" value="{{x.ID}}">{{x.TenLop}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="label label-danger">Năm học mới</span>
+                                <select required class="form-control" ng-model="Info.NamHocMoi" convert-to-number ng-change="changenamhocmoi()">
+                                    <option ng-repeat="x in NamHocMoi" value="{{x.NamHoc}}">{{x.NamHoc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <span class="label label-danger">Lớp {{Info.NamHocMoi}}</span>
+                                <select class="form-control" ng-model="Info.LopMoi" required convert-to-number>
+                                    <option ng-repeat="x in AllLopHocMoi" value="{{x.ID}}">{{x.TenLop}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group pane-vScroll">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                        <tr class="headings">
+                                            <th><input type="checkbox" ng-model="chkAllCB" ng-checked="chkAllCB" ng-change="checkAllChangeCB()" />STT</th>
+                                            <th>Mã HS</th>
+                                            <th>Họ tên</th>
+                                            <th>Năm sinh</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="x1 in allCaBiet">
+                                            <td><input type="checkbox" ng-model="x1.isCheckCB" ng-checked="x1.isCheckCB" />{{$index + 1}}</td>
+                                            <td>{{x1.MaHocSinh}}</td>
+                                            <td>{{x1.HoTen}}</td>
+                                            <td>{{item.NamSinh.slice(6, -2) | date : 'dd/MM/yyyy'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <!-- begin footer-->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" ng-click="addketchuyen()">Kết chuyển</button>
+                        </div>
+                        <!-- end footer-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- end content-->
+@section scripts {
+
+    <script>
+
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap', 'ui.mask', 'myDirective']);
+        app.controller('myCtrl', function ($scope, $http, $filter, fileUpload) {
+
+            $scope.NamHoc = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.NamHoc))');  
+            $scope.LopHoc = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.LopHoc))');  
+            $scope.Ngay = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.Ngay))');
+            $scope.Thang = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.Thang))');
+            $scope.Nam = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.Nam))');
+            //console.log($scope.LopHoc);
+            // phan trang
+            $scope.numPages;
+            $scope.itemPerPage;
+            $scope.totalItems;
+            $scope.currentPage = 1;
+            $scope.maxSize = 5;
+            $scope.pageChanged = function () {
+                $scope.GetData($scope.currentPage);
+            };
+            // lay du lieu
+            $scope.allDanhMuc = [];
+            $scope.searchtext = "";
+            //
+            $scope.numPages1;
+            $scope.itemPerPage1;
+            $scope.totalItems1;
+            $scope.currentPage1 = 1;
+            $scope.maxSize1 = 5;
+            $scope.pageChanged1 = function () {
+                $scope.GetData1($scope.currentPage1);
+            };
+            // lay du lieu
+            $scope.allDanhMuc = [];
+            $scope.allDanhMuc = [];
+            $scope.searchtext = "";
+            $scope.searchtext1 = "";
+            //=========================
+            $scope.GetData = function () {
+                showLoader(true);
+                $http({
+                    method: "GET",
+                    url: "/xettotnghiep/gethocsinh?search=" + $scope.searchtext + "&page=" + $scope.currentPage
+                }).then(function mySuccess(response) {
+                    showLoader(false);
+
+                    if (response.data.error === 0) {
+                        $scope.msg = response.data.msg;
+                        $scope.allDanhMuc = response.data.data;
+                        $scope.itemPerPage = response.data.pageSize;
+                        $scope.totalItems = response.data.toltalSize;
+                        $scope.numPages = Math.round($scope.totalItems / $scope.itemPerPage);
+                    }
+
+                }, function myError(response) {
+                    showLoader(false);
+                    showNotify('Connect error');
+                });
+            }           
+            // goi lay du liẹu
+
+            $scope.GetData();
+            //
+            $scope.Tim = function () {
+                $scope.GetData();
+            }
+
+            // khoi tao bien dung cho create va edit
+            $scope.Info = {};
+            $scope.IsAction = '';
+
+            $scope.addNew = function () {
+                $scope.Info = { NamHoc: "",HoChuLot: "",Ten:"",GioiTinh:"",Ngay:"",Thang:"",Nam:"",DanToc:"",NoiSinh:"",DienUT:"",DienKK:"",Toan:"",Ly:"",Hoa:"",Sinh:"",NguVan:"",Su:"",Dia:"",TiengAnh:"",GDCD:"",CongNghe:"",TiengPhap:"",TheDuc:"Đ",Nhac:"Đ",MyThuat:"Đ",TBCN:"",XepLoaiHL:"",XepLoaiHK:"",XepLoaiTN:"",Lop:"",BuoiNghi:0,GhiChu:""};
+                $scope.modaltitle = "Thêm mới học sinh";
+                $scope.IDDis = false;
+                $scope.IsAction = 'add';
+                showModel("insertmodal");
+
+            };
+            //ket thuc show gia han
+            $scope.edit = function (index) {
+                var info = $scope.allDanhMuc[index];
+                $scope.Info = angular.copy(info);               
+                $scope.modaltitle = "Chỉnh sửa thông tin học sinh";
+                $scope.IDDis = true;
+                $scope.IsAction = 'edit';
+                showModel("insertmodal");
+            };
+            // action
+            $scope.finishForm = function (isValid) {
+                if ($scope.IsAction === 'add') {
+                    $scope.sendCreate();
+                } else if ($scope.IsAction === 'edit') {
+                    $scope.sendEdit();
+                } else if ($scope.IsAction === 'delete') {
+                    $scope.Info = angular.copy(info);
+                    $scope.sendDelete();
+                }
+            };
+            //
+            $scope.getexcel = function () {
+                window.open("/TaiLieu/MauNhap/MauNhapHocSinh.xlsx", "_blank");
+            }
+            $scope.importexcel = function () {
+                $scope.ListError = [];
+                document.getElementById("filetailieu").value = "";
+                showModel('nhapexcelmodal');
+            }
+            //
+            $scope.capnhatexcel = function () {
+
+                if (document.getElementById("filetailieu").files.length === 0) {
+                    showNotify("Vui lòng kiểm tra lại file excel");
+                } else {
+                    showLoader(true);
+                    uiUploader.startUpload({
+                        url: '/hocsinh/excel',
+                        paramName: 'fileTaiLieu',
+                        onProgress: function (file) {
+                            $scope.$apply();
+                        },
+                        onCompleted: function (file, response) {
+
+                            var result = angular.fromJson(response);
+                            showLoader(false);
+                            uiUploader.removeAll();
+                            $('#filetailieu').value = "";
+                            $scope.ListError = result.data;
+                            $scope.GetData(1, "");
+                            if ($scope.ListError.length === 0) {
+                                hideModel('nhapexcelmodal');
+                            };
+                            $scope.$apply();
+                        }
+                    });
+                }
+            }
+            // them tinh
+            $scope.sendCreate = function () {
+                showLoader(true);
+                
+                var namsinh = $scope.Info.Nam + "-" + $scope.Info.Thang + "-" + $scope.Info.Ngay;
+                $http({
+                    method: "POST",
+                    url: "/xettotnghiep/create",
+                    data: { hs: $scope.Info,nam: namsinh }
+                }).then(function success(response) {
+
+                    var result = response.data;
+
+                    if (result.error === 0) {
+                        $scope.Email = result.data;
+                        $scope.GetData();
+                        $scope.allDanhMuc.unshift(result.data);
+                        hideModel("insertmodal");
+                        showNotify("Đã thêm thông tin");
+
+                    } else {
+
+                        alert(result.msg);
+
+                    }
+
+                    showLoader(false);
+
+                }
+                    , function error(response) {
+                        showNotify("connect has disconnect");
+                        showLoader(false);
+                    });
+
+            };
+            // cap nhat tinh
+            $scope.sendEdit = function () {
+                showLoader(true);   
+                //console.log($scope.Info);
+                var namsinh = $scope.Info.Nam + "-" + $scope.Info.Thang + "-" + $scope.Info.Ngay;
+                $http({
+                    method: "POST",
+                    url: "/xettotnghiep/edit",
+                    data: { hs: $scope.Info,nam:namsinh}
+                }).then(
+                    function success(response) {
+                        $scope.GetData();
+                        var result = response.data;
+
+                        if (result.error === 0) {
+                            showNotify("Đã cập nhật");
+                            hideModel("insertmodal");
+
+                        } else {
+
+                            alert(result.msg);
+
+                        }
+
+                        showLoader(false);
+
+                    },
+                    function errror(response) {
+                        showLoader(false);
+                        showNotify("connect has disconnect");
+                    }
+                    );
+            };
+            // xoa du lieu
+            $scope.sendDelete = function (index) {
+                var info = $scope.allDanhMuc[index];
+                var r = confirm("Bạn muốn xóa không ?");
+                if (r) {
+                    showLoader(true);
+
+                    $http({
+                        method: "POST",
+                        url: "/xettotnghiep/delete",
+                        data: { ma: info.ID }
+                    }).then(
+                        function success(response) {
+
+                            var result = response.data;
+
+                            if (result.error == 0) {
+
+                                $scope.allDanhMuc.splice(index, 1);
+
+                            } else {
+
+                                alert(result.msg);
+
+                            }
+
+                            showLoader(false);
+
+                        },
+                        function errror(response) {
+                            showLoader(false);
+                            showNotify("connect has disconnect");
+                        }
+                        );
+                } else {
+
+                }
+            }
+            //ket thuc gia han
+            $scope.chkAll = false;
+
+            $scope.checkAllChange = function () {
+                for (var i = 0; i < $scope.allDanhMuc.length; i++) {
+                    $scope.allDanhMuc[i].isCheck = $scope.chkAll;
+                }
+            };
+            ////////////////////////////them moi tai khoan hoc sinh            
+            $scope.myFile = null;
+            $scope.uploadFile = function () {
+                var file = $scope.myFile;
+                var uploadUrl = "/xettotnghiep/UploadFile";
+                fileUpload.uploadFileToUrl(file, uploadUrl, {
+                    'TestStr': 'VBCC',
+                    'TestNumber': 2
+                }, function (res) {
+
+                        $scope.ListError = res.data.data;
+                        if ($scope.ListError.length === 0) {
+                        $scope.GetData();
+                        hideModel('nhapexcelmodal');
+                     };
+
+                });
+            };            
+            //xoadshs
+            $scope.xoadshs = function () {
+                var r = confirm("Bạn muốn xóa không ?");
+                if (r) {
+                    showLoader(true);
+                //lay vao danh sach an pham duoc chon
+                var listHS = [];
+                for (var i = 0; i < $scope.allDanhMuc.length; i++) {
+                    if ($scope.allDanhMuc[i].isCheck) {
+                        listHS.push($scope.allDanhMuc[i].ID);
+                    }
+                }
+                //ket thuc lay vao danh sach an pham duoc chon
+                $http({
+                    method: "POST",
+                    url: "/xettotnghiep/xoadshs",
+                    data: { hocsinh: listHS}
+                }).then(function success(response) {
+
+                    var result = response.data;
+
+                    if (result.error === 0) {
+                        $scope.GetData();
+                        $scope.allDanhMuc.unshift(result.data);
+                        showNotify("Đã xóa thông tin");
+
+                    } else {
+
+                        alert(result.msg);
+
+                    }
+
+                    showLoader(false);
+
+                }
+                    , function error(response) {
+                        showNotify("Không thể kết nối đến hệ thống");
+                        showLoader(false);
+                    });
+                }
+            };
+            //ket chuyen sang phong
+            $scope.ketchuyen = function () {
+                var r = confirm("Bạn muốn chuyển lên phòng ?");
+                if (r) {
+                    showLoader(true);
+                //lay vao danh sach an pham duoc chon
+                var listHS = [];
+                for (var i = 0; i < $scope.allDanhMuc.length; i++) {
+                    if ($scope.allDanhMuc[i].isCheck) {
+                        listHS.push($scope.allDanhMuc[i].ID);
+                    }
+                }
+                //ket thuc lay vao danh sach an pham duoc chon
+                $http({
+                    method: "POST",
+                    url: "/xettotnghiep/chuyenphong",
+                    data: { hocsinh: listHS}
+                }).then(function success(response) {
+
+                    var result = response.data;
+
+                    if (result.error === 0) {
+                        $scope.GetData();
+                        $scope.allDanhMuc.unshift(result.data);
+                        showNotify("Đã kết chuyển thông tin");
+
+                    } else {
+
+                        alert(result.msg);
+
+                    }
+
+                    showLoader(false);
+
+                }
+                    , function error(response) {
+                        showNotify("Không thể kết nối đến hệ thống");
+                        showLoader(false);
+                    });
+                }
+            };
+        });
+        //-- end controller
+
+    </script>
+}
+
+
+
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ac8b1c72afea46268b4b7f6ab43d22e8" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="VBCCModel.AspNetRole" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="VBCCModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="VBCCModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="VBCCModel.DM_NhanVien_DaoTao" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="VBCCModel.VB_TT_File" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="VBCCModel.UMS_GroupMenu" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="VBCCModel.UMS_Menu" Width="1.5" PointX="10.375" PointY="3.75" />
+        <EntityTypeShape EntityType="VBCCModel.UMS_MenuGroupUser" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="VBCCModel.UMS_UserGroups" Width="1.5" PointX="10.375" PointY="7.75" />
+        <EntityTypeShape EntityType="VBCCModel.AspNetUser" Width="1.5" PointX="3" PointY="1.5" />
+        <AssociationConnector Association="VBCCModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="VBCCModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="VBCCModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="VBCCModel.DM_SoGocVanBang" Width="1.5" PointX="10.75" PointY="10.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_SoGocVanBang_ChiTiet" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_Truong" Width="1.5" PointX="0.75" PointY="12.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_NamHoc" Width="1.5" PointX="3.375" PointY="7.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_DonVi" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_LopHoc" Width="1.5" PointX="12.375" PointY="4.75" />
+        <EntityTypeShape EntityType="VBCCModel.HT_Nam" Width="1.5" PointX="12.375" PointY="7.75" />
+        <EntityTypeShape EntityType="VBCCModel.HT_Ngay" Width="1.5" PointX="7.375" PointY="12.75" />
+        <EntityTypeShape EntityType="VBCCModel.HT_Thang" Width="1.5" PointX="13.375" PointY="9.75" />
+        <EntityTypeShape EntityType="VBCCModel.DM_HocSinh" Width="1.5" PointX="3.375" PointY="13.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

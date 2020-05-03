@@ -1,0 +1,368 @@
+﻿
+@{
+    ViewBag.Title = "Thông tin năm học";
+}
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-icon" data-background-color="rose">
+                    <i class="material-icons">book</i>
+                </div>
+                <div class="card-content">
+                    <h4 class="card-title">Danh sách năm học</h4>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label"></label>
+                                <input class="form-control" ng-model="searchtext" placeholder="Tìm kiếm thông tin" type="text" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="#" class="btn btn-warning btn-round" ng-click="Tim()">
+                                <i class="material-icons">search</i>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 td-actions text-right">
+                            <a href="#" class="btn btn-success btn-round" ng-click="addNew()">
+                                <i class="material-icons">add</i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>STT</th>
+                                        <th>Năm học</th>
+                                        <th class="text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in allDanhMuc">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{item.NamHoc}}</td>                                     
+                                        <td class="td-actions text-right">
+                                            <a href="#" class="btn btn-success btn-round" ng-click="edit($index)" data-toggle="tooltip" title="chỉnh sửa">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-round" ng-click="sendDelete($index)" data-toggle="tooltip" title="Xóa">
+                                                <i class="material-icons">close</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                            
+                        </div>
+                        <ul items-per-page="itemPerPage" uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" boundary-link-numbers="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        <!-- end phan trang-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- tao model them moi-->
+    <div id="insertmodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg" style="width:50%">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{modaltitle}}</h4>
+                </div>
+                <!-- begin form-->
+                <form class="css-form" name="createForm" ng-submit="finishForm(createForm.$valid)">
+                    <!-- body-->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <span class=" label label-danger">Năm học</span>
+                                            <select class="form-control" ng-model="Info.NamHoc" ng-change="NienKhoa()" ng-disabled="DisNam" convert-to-number>
+                                                <option value="2013">2013</option>
+                                                <option value="2014">2014</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                                <option value="2022">2022</option>
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                    <!-- end body-->
+                    <!-- begin footer-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Hoàn thành</button>
+                    </div>
+                    <!-- end footer-->
+                </form>
+                <!-- end form-->
+
+            </div>
+            <!-- end modal content-->
+        </div>
+    </div>
+    <!-- end modal them-->
+</div>
+
+
+<!-- end content-->
+@section scripts {
+
+    <script>
+
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap', 'ui.uploader', 'ui.mask', 'myDirective']);
+        app.controller('myCtrl', function ($scope, $http, $filter) {
+
+            // phan trang
+            $scope.numPages;
+            $scope.itemPerPage;
+            $scope.totalItems;
+            $scope.currentPage = 1;
+            $scope.maxSize = 5;
+            $scope.searchtext = "";
+            $scope.pageChanged = function () {
+                $scope.GetData($scope.currentPage);
+            };
+
+            // lay du lieu
+            $scope.allDanhMuc = [];
+            $scope.GetData = function (page, search) {
+                showLoader(true);
+                $http({
+                    method: "GET",
+                    url: "/NamHoc/getNamHoc?page=" + page + "&search=" + search
+                }).then(function mySuccess(response) {
+                    showLoader(false);
+
+                    if (response.data.error === 0) {
+
+                        $scope.allDanhMuc = response.data.data;
+                        $scope.itemPerPage = response.data.pageSize;
+                        $scope.totalItems = response.data.toltalSize;
+                        $scope.numPages = Math.round($scope.totalItems / $scope.itemPerPage);
+                    }
+
+                }, function myError(response) {
+                    showLoader(false);
+                    showNotify('Connect error');
+                });
+            }
+            // goi lay du liẹu
+            $scope.NienKhoa = function () {
+                $scope.Info.NienKhoa = $scope.Info.NamHoc + '-' + ($scope.Info.NamHoc + 1);
+            };
+            $scope.Tim = function () {
+                $scope.GetData(1,$scope.searchtext);
+            }
+            $scope.GetData(1, $scope.searchtext);
+            //
+            // khoi tao bien dung cho create va edit
+            $scope.Info = {};
+            $scope.IsAction = '';
+
+            $scope.addNew = function () {
+                var date = new Date();
+                console.log(date);
+                var fDate = $filter('date')(date, "dd/MM/yyyy");
+                var tDate = $filter('date')(date.addDays(365), "dd/MM/yyyy");
+                $scope.Info.Check = false;
+                $scope.Info = {"NamHoc":"", "NamHoc": "", "HienTai": false, "FromDate": fDate, "ToDate": tDate };
+                $scope.modaltitle = "Thêm năm học";
+                $scope.DisNam = false;
+                $scope.IsAction = 'add';
+
+                showModel("insertmodal");
+            };
+            $scope.edit = function (index) {
+                var info = $scope.allDanhMuc[index];
+                $scope.Info = angular.copy(info);
+
+                var fDate = $filter('date')($scope.Info .TuNgay.slice(6, -2), "dd/MM/yyyy");
+                var tDate = $filter('date')($scope.Info.DenNgay.slice(6, -2), "dd/MM/yyyy");
+                $scope.Info.FromDate = fDate;
+                $scope.Info.ToDate = tDate;
+
+                $scope.modaltitle = "Chỉnh sửa năm học";
+                $scope.IsAction = 'edit';
+                if ($scope.Info.NamHienTai === true)
+                {
+                    $scope.Info.Check = true;
+                } else
+                {
+                    $scope.Info.Check = false;
+                }
+                $scope.DisNam = true;
+                showModel("insertmodal");
+            };
+            // tim index theo ma tinh
+            function getSelectedIndex(id) {
+                for (var i = 0; i < $scope.allDanhMuc.length; i++)
+                    if ($scope.allDanhMuc[i].NamHoc === id)
+                        return i;
+                return -1;
+            };
+
+            // action
+
+            $scope.finishForm = function (isValid) {
+                if ($scope.IsAction === 'add') {
+                    $scope.sendCreate();
+                } else if ($scope.IsAction === 'edit') {
+                    $scope.sendEdit();
+                } else if ($scope.IsAction === 'delete') {
+                    $scope.Info = angular.copy(info);
+                    $scope.sendDelete();
+                }
+
+
+            };
+
+            // them tinh
+            $scope.sendCreate = function () {
+                showLoader(true);
+
+                $http({
+                    method: "POST",
+                    url: "/NamHoc/create",
+                    data: { NamHoc:$scope.Info.NamHoc,NienKhoa: $scope.Info.NienKhoa, HienTai: $scope.Info.HienTai, tuNgay: $scope.Info.FromDate, denNgay: $scope.Info.ToDate }
+                }).then(function success(response) {
+
+                    var result = response.data;
+                   // console.log(result);
+                    if (result.error === 0) {
+                        $scope.GetData(1, "");
+                        $scope.allDanhMuc.unshift(result.data);
+
+                        hideModel("insertmodal");
+
+                        showNotify("Đã thêm năm học");
+
+                    } else {
+
+                        alert(result.msg);
+
+                    }
+
+                    showLoader(false);
+
+                }
+                    , function error(response) {
+                        showNotify("connect has disconnect");
+                        showLoader(false);
+                    });
+
+            };
+
+            // cap nhat tinh
+            $scope.sendEdit = function () {
+                //console.log("edit");
+                showLoader(true);
+                //console.log($scope.Info.NamHienTai);
+                $http({
+                    method: "POST",
+                    url: "/NamHoc/edit",
+                    data: { namhoc: $scope.Info, tuNgay: $scope.Info.FromDate, denNgay: $scope.Info.ToDate }
+                }).then(
+                    function success(response) {
+                        $scope.GetData(1, "");
+                        var result = response.data;
+
+                        if (result.error === 0) {
+
+                            var findIndex = getSelectedIndex(result.data.NamHoc);
+
+                            if (findIndex !== -1) {
+                                $scope.allDanhMuc[findIndex] = angular.copy(result.data);
+                            }
+
+                            showNotify("Đã cập nhật");
+                            hideModel("insertmodal");
+
+                        } else {
+
+                            alert(result.msg);
+
+                        }
+
+                        showLoader(false);
+
+                    },
+                    function errror(response) {
+                        showLoader(false);
+                        showNotify("connect has disconnect");
+                    }
+                    );
+            };
+
+            // xoa du lieu
+            $scope.sendDelete = function (index) {
+                var info = $scope.allDanhMuc[index];
+                var r = confirm("Bạn muốn xóa không ?");
+                if (r) {
+                    showLoader(true);
+
+                    $http({
+                        method: "POST",
+                        url: "/NamHoc/delete",
+                        data: { namhoc: info.NamHoc }
+                    }).then(
+                        function success(response) {
+
+                            var result = response.data;
+
+                            if (result.error == 0) {
+
+                                // var findIndex = getSelectedIndex(result.data.CountryID);
+
+                                // if (findIndex !== -1) {
+                                $scope.allDanhMuc.splice(index, 1);
+                                //  }
+
+                            } else {
+
+                                alert(result.msg);
+
+                            }
+
+                            showLoader(false);
+
+                        },
+                        function errror(response) {
+                            showLoader(false);
+                            showNotify("connect has disconnect");
+                        }
+                        );
+                } else {
+
+                }
+
+
+            }
+
+        });
+        //-- end controller
+
+    </script>
+}
+
+
+

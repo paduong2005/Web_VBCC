@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "Thông tin học sinh đề nghị xét tốt nghiệp";
+}
+<style>
+
+    .pane-hScroll {
+        overflow: auto;
+        /*width: 400px;*/
+        /*background: green;*/
+    }
+
+    .pane-vScroll {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 450px;
+        /*background: red;*/
+    }
+</style>
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="card-header card-header-icon" data-background-color="green">
+                <i class="material-icons">&#xE894;</i>
+            </div>
+            <div class="card-content">
+                <h4 class="card-title">Danh sách học sinh</h4>
+
+                <div class="card-content">
+                    <div class="tab-content">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group label-floating">
+                                    <label class="control-label"></label>
+                                    <input class="form-control" ng-model="searchtext" placeholder="Nhập vào họ tên" type="text" />
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="#" class="btn btn-warning btn-round" ng-click="Tim()" data-toggle="tooltip" title="Tìm kiếm">
+                                    <i class="material-icons">search</i>
+                                </a>
+                            </div>
+                            <div class="col-sm-1 td-actions text-right">
+                                <a href="/hocsinh/excelexport" class="btn btn-warning btn-round" data-toggle="tooltip" title="Xuất excel">
+                                    <i class="material-icons">exit_to_app</i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <span class="text-danger">{{msg}}</span>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings info">
+                                        <th>STT</th>
+                                        <th>Họ và</th>
+                                        <th>Tên</th>
+                                        <th>Lớp</th>
+                                        <th>Năm học</th>
+                                        <th>Năm sinh</th>
+                                        <th>Giới tính</th>
+                                        <th>Nơi sinh</th>
+                                        <th>TBCN</th>
+                                        <th>Xếp loại HK</th>
+                                        <th>Xếp loại HL</th>
+                                        <th>Xếp loại TN</th>
+                                        <th>Trang thái</th>
+                                        <th class="text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in allDanhMuc">
+                                        <td><input type="checkbox" ng-model="item.isCheck" ng-checked="item.isCheck" /> {{$index + 1}}</td>
+                                        <td>{{item.HoChuLot}}</td>
+                                        <td>{{item.Ten}}</td>
+                                        <td>{{item.Lop}}</td>
+                                        <td>{{item.NamHoc}}</td>
+                                        <td>{{item.Ngay}}/{{item.Thang}}/{{item.Nam}}</td>
+                                        <td>{{item.GioiTinh}}</td>
+                                        <td>{{item.NoiSinh}}</td>
+                                        <td>{{item.TBCN}}</td>
+                                        <td>{{item.XepLoaiHK}}</td>
+                                        <td>{{item.XepLoaiHL}}</td>
+                                        <td>{{item.XepLoaiTN}}</td>
+                                        <td>{{item.TrangThai === 0 ? 'Tạo mới' :(item.TrangThai=== 1 ? 'Đã chuyển': (item.TrangThai === 2 ? 'Đã duyệt': 'Không duyệt'))}}</td>
+                                        <td class="td-actions text-right" style="width:10%">
+                                            <a href="#" class="btn btn-success btn-round" ng-click="print($index)" data-toggle="tooltip" title="Chứng nhận tạm thời">
+                                                <i class="material-icons">print</i>
+                                            </a>                           
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ul items-per-page="itemPerPage" uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" max-size="maxSize" boundary-link-numbers="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- end content-->
+@section scripts {
+
+    <script>
+
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap', 'ui.mask', 'myDirective']);
+        app.controller('myCtrl', function ($scope, $http, $filter, fileUpload) {
+
+            //console.log($scope.LopHoc);
+            // phan trang
+            $scope.numPages;
+            $scope.itemPerPage;
+            $scope.totalItems;
+            $scope.currentPage = 1;
+            $scope.maxSize = 5;
+            $scope.pageChanged = function () {
+                $scope.GetData($scope.currentPage);
+            };
+
+            // lay du lieu
+            $scope.allDanhMuc = [];
+            $scope.searchtext = "";
+            //=========================
+            $scope.GetData = function () {
+                showLoader(true);
+                $http({
+                    method: "GET",
+                    url: "/xacnhantotnghiep/gethocsinh?search=" + $scope.searchtext + "&page=" + $scope.currentPage
+                }).then(function mySuccess(response) {
+                    showLoader(false);
+
+                    if (response.data.error === 0) {
+                        $scope.msg = response.data.msg;
+                        $scope.allDanhMuc = response.data.data;
+                        $scope.itemPerPage = response.data.pageSize;
+                        $scope.totalItems = response.data.toltalSize;
+                        $scope.numPages = Math.round($scope.totalItems / $scope.itemPerPage);
+                    }
+
+                }, function myError(response) {
+                    showLoader(false);
+                    showNotify('Connect error');
+                });
+            }
+            // goi lay du liẹu
+
+            $scope.GetData();
+            //
+            $scope.Tim = function () {
+                $scope.GetData();
+            }
+            $scope.print = function (index) {
+                var info = $scope.allDanhMuc[index];
+                $scope.Info = angular.copy(info);               
+                showthongbao("Đang cập nhật");
+                //lưu lại lịch sử in xác nhận tốt nghiệp
+            };
+        });
+        //-- end controller
+
+    </script>
+}
+
+
+
+

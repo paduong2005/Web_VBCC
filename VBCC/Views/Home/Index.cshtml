@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "Quản lý văn bằng chứng chỉ";
+}
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+    <div class="card">
+        <div class="card-header card-header-icon" data-background-color="green">
+            <i class="material-icons">event_note</i>
+        </div>
+        <div class="card-content">
+            <h2 class="card-title">@ViewBag.TenTruong</h2>
+            <div class="row">
+                <p><strong>Mã trường: </strong>@ViewBag.MaTruong</p>
+                <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                        <tr class="headings">
+                            <th scope="col">Thông tin hỗ trợ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Email :cskh.anphatedu@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td>Hotline : 0933.104.022</td>
+                        </tr>
+                        <tr>
+                            <td>CÔNG TY TNHH THIẾT BỊ VÀ CÔNG NGHỆ PHẦN MỀM AN PHÁT</td>
+                        </tr>
+                        <tr>
+                            <td><a target="_blank" class="btn btn-info btn-lg active" role="button" aria-pressed="true" href="~/TaiLieu/PhanMem/UltraViewer_setup_6.1_vi.exe">Tải chương trình điều khiển UltraView</a></td>
+                        </tr>
+                        <tr>
+                            <td><a target="_blank" class="btn btn-info btn-lg active" role="button" aria-pressed="true" href="~/TaiLieu/HDSDEMS.docx">Hướng dẫn sử dụng</a></td>
+                        </tr>
+
+                        @*<tr>
+                                <td><a class="btn btn-info" ng-click="getupdateinfo()">Chi tiết cập nhật <span style="color:red" class="badge badge-secondary">New</span> </a></td>
+                            </tr>*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="updateinfomodal" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:90%">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Chi tiết nội dung cập nhật</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <label class="label label-danger">Chi tiết nội dung</label>
+                            <table class="table table-bordered jambo_table bulk_action  border-danger">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>STT</th>
+                                        <th>Ngày</th>
+                                        <th>Đường dẫn</th>
+                                        <th>Chức năng</th>
+                                        <th>Nội dung</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>01/11/2019</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm</td>
+                                        <td>Nhập từ excel</td>
+                                        <td>
+                                            Thay đổi định dạng nhập từ excel 2003(xls) sang excel 2007 (xlsx).
+                                            <br>
+                                            Bổ sung các thông báo chính xác về nội dung lỗi, dòng cột bị sai thông tin.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>01/11/2019</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm</td>
+                                        <td>Danh sách ấn phẩm</td>
+                                        <td>
+                                            Bổ sung chức năng lọc tất cả ấn phẩm, ấn phẩm đã biên mục, chưa biên mục, đã cấp số cá biệt, chưa cấp số cá biệt.
+                                            <br>
+                                            Bổ sung tổng số lượng ấn phẩm đã nhập, đã biên mục và đã cấp số cá biệt.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>01/11/2019</td>
+                                        <td>Danh mục => Bảng màu</td>
+                                        <td>Bảng màu</td>
+                                        <td>
+                                            Bổ sung bảng nhập mã màu theo từng khối lớp và trình độ đọc.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>01/11/2019</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm</td>
+                                        <td>Biên mục (BM)</td>
+                                        <td>
+                                            Bổ sung nội dung phân loại ấn phẩm theo màu sách ở chức năng biên mục ấn phẩm.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>01/11/2019</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm</td>
+                                        <td>Nhập từ excel</td>
+                                        <td>
+                                            Bổ sung chức năng "Lưu ý khi nhập excel".
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>05/01/2020</td>
+                                        <td>Đăng nhập</td>
+                                        <td>Đăng nhập</td>
+                                        <td>
+                                            Hỗ trợ hiển thị mật khẩu khi đăng nhập.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>05/01/2020</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm</td>
+                                        <td>Biên mục ấn phẩm</td>
+                                        <td>
+                                            Hỗ trợ tìm kiếm nhanh thông tin phân loại, tác giả, nhà xuất bản ở chức năng biên mục.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>07/01/2020</td>
+                                        <td>Biên mục => Nhập mới ấn phẩm, Danh sách ấn phẩm</td>
+                                        <td>Nhập từ excel</td>
+                                        <td>
+                                            Chỉnh sửa lỗi nhập từ excel không nhận thông tin nguồn cung cấp và tính chất nguồn nhập.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>07/01/2020</td>
+                                        <td>Biên mục => Thanh lý, kiểm kê</td>
+                                        <td>Tìm kiếm ấn phẩm</td>
+                                        <td>
+                                            Bổ sung thanh cuộn giới hạn hiển thị số lượng ấn phẩm khi kiểm kê, thanh lý.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>07/01/2020</td>
+                                        <td>Biên mục => Danh sách ấn phẩm</td>
+                                        <td>Xuất excel</td>
+                                        <td>
+                                            Bổ sung chức năng xuất excel tất cả ấn phẩm đã được nhập vào phần mềm.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- end modal content-->
+    </div>
+</div>
+    </div>
+@section scripts {
+    <script>
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap', 'ui.mask']);
+        app.controller('myCtrl', function ($scope) {
+
+            $scope.getupdateinfo = function () {
+                //console.log('ttttt');
+                showModel('updateinfomodal');
+            }
+        });
+                        //-- end controller
+    </script>
+}

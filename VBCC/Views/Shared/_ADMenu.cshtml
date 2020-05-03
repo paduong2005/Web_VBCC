@@ -1,0 +1,207 @@
+﻿@{
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity
+@model String
+<div class="user">
+    <div class="photo">
+        <img src="../HinhAnh/@Model" />
+    </div>
+    <div class="info">
+        <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+            <span style="font-size:12px">
+                @User.Identity.Name
+                <b class="caret"></b>
+            </span>
+        </a>
+        <div class="clearfix"></div>
+        <div class="collapse" id="collapseExample">
+            <ul class="nav">
+                <li>
+                    <a href="/manage/changepassword">
+                        <span class="sidebar-mini"> MK </span>
+                        <span class="sidebar-normal"> Đổi mật khẩu </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:document.getElementById('logoutForm').submit()">
+                        <span class="sidebar-mini"> TH </span>
+                        <span class="sidebar-normal"> Thoát </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> HỆ THỐNG </p>
+        </a>
+    </li>
+
+    <li>
+        <a data-toggle="collapse" href="#adthongtinchung">
+            <i class="material-icons">image</i>
+            <p>
+                Thông tin chung
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="adthongtinchung">
+            <ul class="nav">
+                <li>
+                    <a href="/donvi/show">
+                        <span class="sidebar-mini"> ĐV </span>
+                        <span class="sidebar-normal"> Đơn vị </span>
+                    </a>
+                </li>
+                @*<li>
+                        <a href="/thietlap/show">
+                            <span class="sidebar-mini"> TL </span>
+                            <span class="sidebar-normal"> Thiết lập </span>
+                        </a>
+                    </li>*@
+                <li>
+                    <a href="/nguoidung/show">
+                        <span class="sidebar-mini"> ND </span>
+                        <span class="sidebar-normal"> Người dùng </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+
+    <li>
+        <a data-toggle="collapse" href="#addanhmuc">
+            <i class="material-icons">apps</i>
+            <p>
+                Danh mục
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="addanhmuc">
+            <ul class="nav">                
+                @*<li>
+                    <a href="/tobomon/show">
+                        <span class="sidebar-mini"> TBM </span>
+                        <span class="sidebar-normal"> Tổ bộ môn </span>
+                    </a>
+                </li>*@                
+            </ul>
+        </div>
+    </li>
+</ul>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> QUẢN LÝ VĂN BẰNG </p>
+        </a>
+    </li>
+
+    <li>
+        <a href="pxettotnghiep/show">
+            <i class="material-icons">widgets</i>
+            <p> Xét tốt nghiệp </p>
+        </a>
+    </li>
+    <li>
+        <a href="/cauhinhphoi/show">
+            <i class="material-icons">widgets</i>
+            <p> Quản lý phôi bằng </p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> In bằng </p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> Cấp phát văn bằng </p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="material-icons">widgets</i>
+            <p> Văn bằng hủy, thu hồi </p>
+        </a>
+    </li>
+
+    <li>
+        <a data-toggle="collapse" href="#adbaocaothongke">
+            <i class="material-icons">apps</i>
+            <p>
+                Báo cáo, thống kê
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="adbaocaothongke">
+            <ul class="nav">
+                <li>
+                    <a href="/thongkehocsinh/show">
+                        <span class="sidebar-mini"> HS </span>
+                        <span class="sidebar-normal"> Thống kê học sinh </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/bcketquahoctap/show">
+                        <span class="sidebar-mini"> KQ </span>
+                        <span class="sidebar-normal"> Kết quả học tập </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>
+<ul class="nav">
+
+    <li class="active">
+        <a href="#">
+            <i class="material-icons">dashboard</i>
+            <p> QUẢN LÝ CÁN BỘ </p>
+        </a>
+    </li>
+
+    @*<li>
+        <a href="/chude/show">
+            <i class="material-icons">widgets</i>
+            <p> Danh sách khóa học </p>
+        </a>
+    </li>
+    <li>
+        <a data-toggle="collapse" href="#adhoctapbaocao">
+            <i class="material-icons">apps</i>
+            <p>
+                Báo cáo, thống kê
+                <b class="caret"></b>
+            </p>
+        </a>
+
+        <div class="collapse" id="adhoctapbaocao">
+            <ul class="nav">
+                <li>
+                    <a href="/tiendohoctaptt/show">
+                        <span class="sidebar-mini"> TD </span>
+                        <span class="sidebar-normal"> Tiến độ học tập </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/thongkekhoahocttad/show">
+                        <span class="sidebar-mini"> KH </span>
+                        <span class="sidebar-normal"> Thống kê khóa học </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>*@
+</ul>

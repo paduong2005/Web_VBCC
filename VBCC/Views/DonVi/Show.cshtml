@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Thông tin đơn vị";
+}
+
+<div class="row" ng-app="myApp" ng-controller="myCtrl">
+    <!-- body-->
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12">
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class="label label-danger">Đơn vị cấp trên</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.DonViCapTren" required placeholder="Nhập vào thông tin đơn vị cấp trên" />
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-danger">Tên đơn vị</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.TenDonVi" placeholder="Nhập vào thông tin tên đơn vị" />
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-info">Địa chỉ</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.DiaChi" />
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-info">Số điện thoại</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.SoDienThoai" />
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-info">Fax</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.Fax" />
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-info">Email</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.Email" />
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <span class=" label label-info">Website</span>
+                    <input type="text" class="form-control" ng-model="ThongTin.Website" />
+                </div>
+            </div>
+            @*<div class="col-sm-12">
+                    <div class="form-group">
+                        <span class=" label label-info">Mã QHNS</span>
+                        <input type="text" class="form-control" ng-model="ThongTin.MaQHNS" />
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <span class=" label label-info">Lập bảng</span>
+                        <input type="text" class="form-control" ng-model="ThongTin.LapBang" />
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <span class=" label label-info">Kế toán trưởng</span>
+                        <input type="text" class="form-control" ng-model="ThongTin.KeToanTruong" />
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <span class=" label label-info">Thủ trưởng</span>
+                        <input type="text" class="form-control" ng-model="ThongTin.HieuTruong" />
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <!-- end body-->
+    <!-- begin footer-->
+    <div class="modal-footer">
+        <button ng-click="edit()" class="btn btn-danger">Lưu</button>
+    </div>
+    <!-- end footer-->
+</div>
+
+@section scripts {
+
+    <script>
+
+        // tao controller
+        var app = angular.module('myApp', ['ui.bootstrap']);
+        app.controller('myCtrl', function ($scope, $http) {
+
+            $scope.ThongTin = angular.fromJson('@Html.Raw(Json.Encode(ViewBag.Info))');
+
+            $scope.edit = function () {
+                showLoader(true);
+                $http({
+                    method: "POST",
+                    url: "/Donvi/edit",
+                    data: $scope.ThongTin
+                }).then(
+                    function success(response) {
+
+                        var result = response.data;
+
+                        if (result.error == 0) {
+
+                            showNotify("Đã cập nhật");
+
+                        } else {
+
+                            alert(result.msg);
+
+                        }
+
+                        showLoader(false);
+
+                    },
+                    function errror(response) {
+                        showLoader(false);
+                        showNotify("Không thể kết nối hệ thống");
+                    });
+
+            };
+        });
+
+    </script>
+}
